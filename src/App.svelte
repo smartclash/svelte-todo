@@ -54,6 +54,44 @@
 		let tempTodo = $todos;
 		todos.set(tempTodo.filter(element => !element.completed));
 	}
+
+	function editTodo({ detail: { id }}) {
+		let tempTodo = $todos;
+
+		for(let i in $todos) {
+			if (tempTodo[i].id === id) {
+				tempTodo[i].editing = !tempTodo[i].editing
+			}
+		}
+
+		todos.set(tempTodo);
+	}
+
+	// ES6 Destructuring to get keyCode and value from form via native DOM events
+	function saveEditedTodo({ 
+		detail: { 
+			id, 
+			event: {
+				keyCode,
+				target: { value }
+			}
+		}
+	}) {
+		if (keyCode != 13) {
+			return false;
+		}
+
+		let tempTodo = $todos;
+
+		for(let i in $todos) {
+			if (tempTodo[i].id === id) {
+				tempTodo[i].title = value;
+				tempTodo[i].editing = false;
+			}
+		}
+
+		todos.set(tempTodo);
+	}
 </script>
 
 <section class="todoapp">
@@ -61,7 +99,7 @@
 		<h1>todos</h1>
 		<input class="new-todo" autocomplete="off" placeholder="What needs to be done?" on:keyup={addTodo} bind:value={todo}>
 	</header>
-	<section class="main" >
+	<section class="main">
 		<input id="toggle-all" class="toggle-all" type="checkbox">
 		<label for="toggle-all" class:hide="{$todos.length === 0}"></label>
 		<ul class="todo-list">
@@ -69,7 +107,9 @@
 				<TodoItem 
 					{...list} 
 					on:completed={toggleTodoStatus}
-					on:delete={deleteTodo} />
+					on:delete={deleteTodo}
+					on:editing={editTodo}
+					on:edited={saveEditedTodo} />
 			{/each}
 		</ul>
 	</section>
@@ -77,11 +117,6 @@
 		<span class="todo-count">
 			<strong>{ remainingTodos }</strong> { remainingTodos > 1 ? 'todos' : 'todo' } left
 		</span>
-		<!-- <ul class="filters">
-			<li><a href="#/all">All</a></li>
-			<li><a href="#/active">Active</a></li>
-			<li><a href="#/completed">Completed</a></li>
-		</ul> -->
 		<button class="clear-completed" on:click={clearCompleted}>
 			Clear completed
 		</button>
