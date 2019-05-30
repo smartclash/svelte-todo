@@ -1,7 +1,3 @@
-<svelte:head>
-	<link rel="stylesheet" href="https://unpkg.com/todomvc-app-css@2.2.0/index.css">
-</svelte:head>
-
 <style>
 	.hide {
 		display: none !important;
@@ -34,6 +30,12 @@
 		todo = '';
 		todoID = todoID + 1;
 	}
+
+	function toggleTodoStatus(event) {
+		let tempTodo = $todos;
+		tempTodo[event.detail.id - 1].completed = !tempTodo[event.detail.id - 1].completed;
+		todos.set(tempTodo);
+	}
 </script>
 
 <section class="todoapp">
@@ -46,7 +48,7 @@
 		<label for="toggle-all" class:hide="{$todos.length === 0}"></label>
 		<ul class="todo-list">
 			{#each $todos as list}
-				<TodoItem {...list} />
+				<TodoItem {...list} on:completed={toggleTodoStatus} />
 			{/each}
 		</ul>
 	</section>
