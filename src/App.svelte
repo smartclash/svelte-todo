@@ -26,15 +26,31 @@
 			completed: false,
 			editing: false
 		}]);
-		console.log(todo, $todos);
+
 		todo = '';
 		todoID = todoID + 1;
 	}
 
-	function toggleTodoStatus(event) {
+	function toggleTodoStatus({detail : { id }}) {
 		let tempTodo = $todos;
-		tempTodo[event.detail.id - 1].completed = !tempTodo[event.detail.id - 1].completed;
+
+		for(let i in $todos) {
+			if (tempTodo[i].id === id) {
+				tempTodo[i].completed = !tempTodo[i].completed
+			}
+		}
+
 		todos.set(tempTodo);
+	}
+
+	function deleteTodo({detail : { id }}) {
+		let tempTodo = $todos;
+		todos.set(tempTodo.filter(element => element.id !== id));
+	}
+
+	function clearCompleted() {
+		let tempTodo = $todos;
+		todos.set(tempTodo.filter(element => !element.completed));
 	}
 </script>
 
@@ -48,26 +64,28 @@
 		<label for="toggle-all" class:hide="{$todos.length === 0}"></label>
 		<ul class="todo-list">
 			{#each $todos as list}
-				<TodoItem {...list} on:completed={toggleTodoStatus} />
+				<TodoItem 
+					{...list} 
+					on:completed={toggleTodoStatus}
+					on:delete={deleteTodo} />
 			{/each}
 		</ul>
 	</section>
-	<!-- <footer class="footer" v-show="todos.length" v-cloak>
+	<footer class="footer" class:hide="{$todos.length === 0}">
 		<span class="todo-count">
-			<strong>{{ remaining }}</strong> {{ remaining | pluralize }} left
+			<strong>{ $todos.length }</strong> { $todos.length > 1 ? 'todos' : 'todo' } left
 		</span>
-		<ul class="filters">
-			<li><a href="#/all" :class="{ selected: visibility == 'all' }">All</a></li>
-			<li><a href="#/active" :class="{ selected: visibility == 'active' }">Active</a></li>
-			<li><a href="#/completed" :class="{ selected: visibility == 'completed' }">Completed</a></li>
-		</ul>
-		<button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
+		<!-- <ul class="filters">
+			<li><a href="#/all">All</a></li>
+			<li><a href="#/active">Active</a></li>
+			<li><a href="#/completed">Completed</a></li>
+		</ul> -->
+		<button class="clear-completed" on:click={clearCompleted}>
 			Clear completed
 		</button>
-	</footer> -->
+	</footer>
 </section>
 <footer class="info">
 	<p>Double-click to edit a todo</p>
-	<p>Written by <a href="http://evanyou.me">Evan You</a></p>
-	<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+	<p>Written by <a href="https://alphaman.me">xXAlphaManXx</a></p>
 </footer>
