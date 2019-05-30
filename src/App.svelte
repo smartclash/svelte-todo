@@ -57,7 +57,7 @@
 <section class="todoapp">
 	<header class="header">
 		<h1>todos</h1>
-		<input class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" on:keyup={addTodo} bind:value={todo}>
+		<input class="new-todo" autocomplete="off" placeholder="What needs to be done?" on:keyup={addTodo} bind:value={todo}>
 	</header>
 	<section class="main" >
 		<input id="toggle-all" class="toggle-all" type="checkbox">
