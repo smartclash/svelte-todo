@@ -5,11 +5,13 @@
 </style>
 
 <script>
-	import TodoItem from './Components/TodoItem.svelte';
+	import TodoItem from './Components/TodoItem.svelte'
 	import { todos } from './store.js';
 
 	let todoID = 1;
 	let todo = '';
+
+	$: remainingTodos = $todos.filter(element => !element.completed).length;
 
 	function addTodo(event) {
 		if (event.keyCode !== 13) {
@@ -73,7 +75,7 @@
 	</section>
 	<footer class="footer" class:hide="{$todos.length === 0}">
 		<span class="todo-count">
-			<strong>{ $todos.length }</strong> { $todos.length > 1 ? 'todos' : 'todo' } left
+			<strong>{ remainingTodos }</strong> { remainingTodos > 1 ? 'todos' : 'todo' } left
 		</span>
 		<!-- <ul class="filters">
 			<li><a href="#/all">All</a></li>
